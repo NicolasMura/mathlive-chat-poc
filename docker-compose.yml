@@ -1,0 +1,40 @@
+version: "3.7" # specify docker-compose version
+
+# Define the services/containers to be run
+services:
+  frontend: # name of Angular app service
+    image: nicolasmura/mlchat-poc-frontend-public
+    container_name: photos-frontend
+    env_file:
+      - .env
+    ports:
+      - ${HOST_HTTPS_PORT}:443
+    volumes:
+      - ${ENV_JS}:/usr/local/apache2/htdocs/mlchat-poc/frontend-public/env.js
+      - ${APACHE_LOG}:/var/log/apache2
+      - ${SSL_VOLUME}:/var/imported/ssl
+    depends_on:
+      - api
+    networks:
+      mlchat-poc-network:
+
+  api: # name of Node JS app
+    image: nicolasmura/mlchat-poc-backend-api
+    container_name: photos-backend
+    env_file:
+      - .env
+    ports:
+      - ${NODE_PORT}:${NODE_PORT}
+    volumes:
+      - .env:/usr/mlchat-poc/backend-api/dist/apps/backend-api/.env
+      - .docker/${UPLOAD_FOLDER_TMP}:/usr/mlchat-poc/backend-api/${UPLOAD_FOLDER_TMP}
+    restart: on-failure
+    networks:
+      mlchat-poc-network:
+
+networks:
+  mlchat-poc-network:
+    driver: bridge
+    name: mlchat-poc-network
+
+# volumes: set in docker-compose.macosx-override.yml

@@ -1,0 +1,15 @@
+# must be defined in .env
+
+version: "3.7"
+
+# Define the services/containers overrides
+services:
+  frontend:
+    # to be tested for developping via Docker container!
+    volumes:
+      - ./apps/frontend-public:/app # this will enable changes made to the angular app reflect in the container
+
+  api:
+    # to be tested for developping via Docker container!
+    volumes:
+      - ./apps/backend-api:/app # this will enable changes made to the angular app reflect in the container

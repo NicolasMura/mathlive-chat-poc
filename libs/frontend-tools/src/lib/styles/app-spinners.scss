@@ -1,0 +1,48 @@
+/*
+========================
+    Loading spinners
+========================
+*/
+// simple loading spinners inside buttons
+@keyframes mc-spinner {
+  to {transform: rotate(360deg);}
+}
+
+.mc-spinner:before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  border-top-color: #000000;
+  animation: mc-spinner .8s linear infinite;
+}
+
+// Wrapper for component loading spinner
+.wrapper {
+  position: relative;
+
+  .overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 1002;
+    width: 100%;
+    height: 100%;
+  }
+
+  .blurred {
+    filter: blur(1px);
+  }
+
+  .opacity {
+    opacity: 0.5;
+  }
+}

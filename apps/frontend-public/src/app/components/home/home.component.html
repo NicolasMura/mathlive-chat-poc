@@ -1,0 +1,60 @@
+<div class="page-home">
+  <mat-error *ngIf="webSocketService.lostConnection" class="login-error">
+    Erreur : connexion impossible (le serveur semble injoignable :/)
+  </mat-error>
+
+  <form [formGroup]="messageForm" noValidate (keydown.enter)="$event.preventDefault()">
+
+    <mat-form-field appearance="fill" [style.visibility]="modeMathlive ? 'hidden' : 'visible'">
+      <mat-label for="message">Votre message ({{ utilitiesService.isMacOS ? 'CMD + ENTER' : 'CTRL + ENTER' }} pour envoyer)</mat-label>
+      <input matInput type="text" formControlName="message" #input />
+      <mat-hint *ngIf="!messageForm?.get('message')?.value">Veuillez saisir votre {{ modeMathlive ? 'formule' : 'message' }}</mat-hint>
+    </mat-form-field>
+
+    <!-- <div>{{ mfe.value }}</div> -->
+    <div #mathfield class="mathfield-wrapper" [style.visibility]="modeMathlive ? 'visible' : 'hidden'"></div>
+
+    <button mat-fab color="primary" aria-label="send message"
+            (click)="sendMessage()"
+            [disabled]="!messageForm?.get('message')?.value || webSocketService.lostConnection"
+            matTooltip="Envoyer votre message"
+            class="submit"
+            data-cy="send-message-btn">
+      <mat-icon>send</mat-icon>
+    </button>
+
+    <button mat-fab [color]="modeMathlive ? 'primary': ''" aria-label="display mathfield"
+            (click)="toggleMathFieldMode()"
+            [matTooltip]="modeMathlive ? 'Afficher le mode normal' : 'Afficher le mode Math'">
+      <mat-icon>functions</mat-icon>
+    </button>
+
+    <!-- <button mat-fab [color]="isVirtualKeyboardDisplayed ? 'primary': ''" aria-label="display mathfield"
+            *ngIf="modeMathlive"
+            (click)="toggleMathFieldVirtualKeyboard();">
+      <mat-icon>keyboard</mat-icon>
+    </button> -->
+
+  </form>
+
+  <mlchat-poc-message *ngFor="let message of sortMessagesByUnixDate(webSocketService.getAllMessages()); let i = index;"
+                      [message]="message"
+                      [user]="userService.getCurrentUser()" [i]="i">
+  </mlchat-poc-message>
+
+  <!-- <div *ngFor="let message of sortMessagesByUnixDate(webSocketService.getAllMessages()); let i = index;">
+    <div [ngClass]="{ 'align-right': message.sender === userService.getCurrentUser().username }">
+      <div *ngIf="!message.isMathliveContent">({{ i }}) - {{ message.sender }} : {{ message.content }} ({{ message.isMathliveContent ? 'math' : 'standard'}})</div>
+      <div *ngIf="message.isMathliveContent">({{ i }}) - {{ message.sender }} : {{ message.content }} ({{ message.isMathliveContent ? 'math' : 'standard'}})</div>
+    </div>
+  </div> -->
+
+  <!-- Debug form START -->
+  <pre style="font-size:15px">{{ messageForm.getRawValue() | json }}</pre>
+  <!-- Debug form END -->
+
+  <div *ngIf="webSocketService.lostConnection"
+       style="position: absolute; z-index: 10; bottom: 0; background-color: red; width: 100%; height: 20px; color: white; padding-left: 5px">
+    Pas de connexion internet ?
+  </div>
+</div>

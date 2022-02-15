@@ -1,0 +1,69 @@
+# Inspired from https://blog.logrocket.com/containerized-development-nestjs-docker/
+
+# Create developemnt image based on the official Node 12 image from the dockerhub
+FROM node:12-alpine AS development
+
+# Create a directory where our app will be placed
+RUN mkdir -p /usr/mlchat-poc/backend-api
+
+# Change directory so that our commands run inside this new directory
+WORKDIR /usr/mlchat-poc/backend-api
+
+# Copy dependency definitions
+COPY package.json yarn.lock ./
+
+# Install dependencies
+RUN yarn install --ignore-scripts --network-timeout 60000
+
+# Get all the code needed to run the app
+COPY . .
+
+# Build for production
+RUN npx nx build backend-api --configuration=production
+
+# ---------------------------------
+# Create production image based on the official Node 12 image from the dockerhub
+FROM node:12-alpine AS production
+
+# Install bash & nano
+RUN apk add bash nano
+
+# Create a directory where our app will be placed
+RUN mkdir -p /usr/mlchat-poc/backend-api
+
+# Change directory so that our commands run inside this new directory
+WORKDIR /usr/mlchat-poc/backend-api
+
+# Install global dependencies
+RUN yarn global add pm2
+
+# Copy dependency definitions
+COPY package.json yarn.lock ./
+
+# Install only production dependencies
+RUN yarn install --production --ignore-scripts --network-timeout 60000
+
+# Rebuild bcrypt library (cf. Error: Cannot find module '/usr/mlchat-poc/backend-api/node_modules/bcrypt/lib/binding/napi-v3/bcrypt_lib.node')
+RUN npm rebuild bcrypt --update-binary
+
+# Get all the code needed to run the app
+# COPY ./config/pm2/pm2.config.js config/pm2/pm2.config.js
+# COPY ./config/pm2/pm2-prod-process.config.js config/pm2/pm2-prod-process.config.js
+# COPY ./build ./build
+# COPY . .
+
+# Copy the built /dist folder from the development image
+COPY --from=development /usr/mlchat-poc/backend-api/dist/apps/backend-api ./dist/apps/backend-api
+
+# Expose the port the app runs in
+EXPOSE 3334
+
+# Serve the app
+# CMD ["npx", "nx", "serve", "backend-api"]
+CMD ["node", "dist/apps/backend-api/main.js"]
+# RUN yarn add express --ignore-scripts --network-timeout 60000
+# COPY test.js .
+# CMD ["node", "test.js"]
+# CMD ["pm2-runtime", "./config/pm2/pm2-prod-process.config.js", "./build/main.bundle.js"]
+
+

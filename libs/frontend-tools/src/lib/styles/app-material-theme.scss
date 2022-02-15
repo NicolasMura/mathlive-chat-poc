@@ -1,0 +1,98 @@
+// Import material theming functions
+@import '~@angular/material/theming';
+
+// Generics colors
+$cpt-bg-color-darker: #333333;
+$cpt-bg-color-light: #eeeff5;
+
+// Custom Theme
+@include mat-core();
+
+// Palettes for custom theme using the Material Design palettes available in palette.scss
+$cpt-purple: (
+  50: #884aa3,
+  100: #884aa3,
+  200: #884aa3,
+  300: #884aa3,
+  400: #581d74,
+  500:#581d74,
+  600:#581d74,
+  700: #2a0048,
+  800: #2a0048,
+  900: #2a0048,
+  A100: #884aa3,
+  A200: #581d74,
+  A400: #581d74,
+  A700: #2a0048,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $light-primary-text,
+    400: $light-primary-text,
+    500: $light-primary-text,
+    600: $light-primary-text,
+    700: $light-primary-text,
+    800: $light-primary-text,
+    900: $light-primary-text,
+    A100: $light-primary-text,
+    A200: $light-primary-text,
+    A400: $light-primary-text,
+    A700: $light-primary-text,
+  )
+);
+
+$cpt-yellow: (
+  50: #ffff74,
+  100: #ffff74,
+  200: #ffff74,
+  300: #ffff74,
+  400: #ffd740,
+  500:#ffd740,
+  600:#ffd740,
+  700: #c8a600,
+  800: #c8a600,
+  900: #c8a600,
+  A100: #ffff74,
+  A200: #ffd740,
+  A400: #ffd740,
+  A700: #c8a600,
+  contrast: (
+    50: $dark-primary-text,
+    100: $dark-primary-text,
+    200: $dark-primary-text,
+    300: $dark-primary-text,
+    400: $dark-primary-text,
+    500: $dark-primary-text,
+    600: $dark-primary-text,
+    700: $dark-primary-text,
+    800: $dark-primary-text,
+    900: $dark-primary-text,
+    A100: $dark-primary-text,
+    A200: $dark-primary-text,
+    A400: $dark-primary-text,
+    A700: $dark-primary-text,
+  )
+);
+
+$cpt-primary: mat-color(mat-palette($cpt-purple, 500));
+$cpt-secondary: mat-color(mat-palette($cpt-yellow, 500));
+$cpt-warn: mat-color(mat-palette($mat-red, 500));
+
+.cpt-theme {
+  $primary: mat-palette($cpt-purple);
+  $accent:  mat-palette($cpt-yellow);
+  $warn:    mat-palette($mat-red, 500);
+
+  // Create the theme object
+  $cpt-theme: mat-light-theme((
+    color: (
+      primary: $primary,
+      accent: $accent,
+      warn: $warn,
+    )
+  ));
+
+  // Include theme styles for core and each component used in the app
+  @include angular-material-theme($cpt-theme);
+}

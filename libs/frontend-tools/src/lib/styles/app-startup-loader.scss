@@ -1,0 +1,61 @@
+/*
+=========================
+    App StartupLoader
+=========================
+*/
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@mixin loaderDivMixin {
+  border-radius: 50%;
+  padding: 8px;
+  border: 2px solid transparent;
+  animation: rotate linear 3.5s infinite;
+}
+
+.loader-wrapper {
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  flex-direction: column;
+
+  .loader {
+    align-self: center;
+    width: 150px;
+    height: 150px;
+
+    div {
+      height: 100%;
+    }
+  }
+
+  /* loader animation */
+  .animation, .animation div {
+    @include loaderDivMixin;
+    border-top-color: $cpt-bg-color-light;
+    border-left-color: $cpt-primary;
+    animation-timing-function: cubic-bezier(.55, .38, .21, .88);
+    animation-duration: 3s;
+  }
+
+  div:hover {
+    animation-play-state: paused;
+  }
+
+  .loader, .loader * {
+    will-change: transform;
+  }
+}

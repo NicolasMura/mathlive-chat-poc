@@ -1,0 +1,35 @@
+# Create developemnt image based on the official Node 12 image from the dockerhub
+FROM node:12-alpine AS development
+
+# Install bash & nano
+RUN apk add bash nano
+
+# Create a directory where our app will be placed
+RUN mkdir -p /usr/family-calendar-v2/backend-api
+
+# Change directory so that our commands run inside this new directory
+WORKDIR /usr/family-calendar-v2/backend-api
+
+# Copy dependency definitions
+COPY package.json yarn.lock ./
+
+# Install dependencies
+RUN yarn install --ignore-scripts --network-timeout 60000
+RUN npm rebuild bcrypt --update-binary
+
+# Get all the code needed to run the app
+COPY . .
+
+# Build for production
+RUN npx nx build backend-api --configuration=production
+
+# Expose the port the app runs in
+EXPOSE 3334
+
+# Serve the app
+# CMD ["npx", "nx", "serve", "backend-api"]
+CMD ["node", "dist/apps/backend-api/main.js"]
+# RUN yarn add express --ignore-scripts --network-timeout 60000
+# COPY test.js .
+# CMD ["node", "test.js"]
+# CMD ["pm2-runtime", "./config/pm2/pm2-prod-process.config.js", "./build/main.bundle.js"]

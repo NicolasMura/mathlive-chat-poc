@@ -1,0 +1,35 @@
+.page-login {
+  height: 82vh;
+  display: flex;
+  flex-direction: column;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    // margin-top: 20px;
+    padding: 50px;
+
+    button.submit {
+      align-self: center;
+      margin-top: 20px;
+      // background-color: $mat-primary;
+    }
+
+    mat-error.login-error {
+      text-align: center;
+      margin-top: 20px;
+    }
+  }
+
+  .c-trop-bo {
+    flex: 1;
+    max-height: 38vh;
+    text-align: center;
+
+    img {
+      height: 100%
+    }
+  }
+}
+
