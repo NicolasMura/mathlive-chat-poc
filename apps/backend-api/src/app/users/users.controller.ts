@@ -30,7 +30,7 @@ export class UsersController {
   }
 
   @Get('')
-  async getAllUsers() {
+  getAllUsers() {
     Logger.log('******* get all users *******');
     // return req.user;
     return this.usersService.findAll();

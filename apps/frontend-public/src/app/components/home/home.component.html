@@ -16,7 +16,7 @@
 
     <button mat-fab color="primary" aria-label="send message"
             (click)="sendMessage()"
-            [disabled]="!messageForm?.get('message')?.value || webSocketService.lostConnection"
+            [disabled]="!messageForm.valid || webSocketService.lostConnection"
             matTooltip="Envoyer votre message"
             class="submit"
             data-cy="send-message-btn">

@@ -16,7 +16,7 @@ import { User } from '@mlchat-poc/models';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup = new FormGroup({});
   loginLoadingSpinner = false;
-  loginError = false;
+  loginError = '';
   get usernameInput(): AbstractControl | null { return this.loginForm.get('username'); }
 
   constructor(
@@ -40,22 +40,23 @@ export class LoginComponent implements OnInit {
   public login(): void {
     this.loginForm.disable();
     this.loginLoadingSpinner = true;
-    this.loginError = false;
+    this.loginError = '';
 
     const newUser = new User(
       this.loginForm.get('username')?.value,
-      false
+      false,
+      `https://avatars.dicebear.com/api/adventurer/${this.loginForm.get('username')?.value}.svg`
     );
 
     this.userService.login(newUser).subscribe((user: User) => {
       console.log(user);
     }, error => {
       // @TODO : gestion fine des erreurs avec le backend + handleError()
-      console.error(error);
+      console.error(error.error);
       this.loginLoadingSpinner = false;
-      this.loginError = true;
+      this.loginError = error.error?.message ? error.error.message : 'Erreur : connexion impossible (le serveur semble injoignable :/)';
       this.loginForm.enable();
-      const userErrorMsg = error.message ? error.message + ' (connexion impossible)' : 'Erreur inconnue (connexion impossible)';
+      const userErrorMsg = error.error?.message ? error.error.message + ' (connexion impossible)' : 'Erreur inconnue (connexion impossible)';
       this.notificationService.sendNotification(userErrorMsg, '', { panelClass: 'notification-login-by-username-error' });
     });
   }

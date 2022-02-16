@@ -132,7 +132,9 @@ export class WebSocketService extends GlobalService implements OnDestroy {
             tap(err => {
               console.error('Got error', err);
               console.log('[WebSocketService] (connect()) Try to reconnect');
-              this.lostConnection = true;
+              setTimeout(() => {
+                this.lostConnection = true;
+              }, 500);
             }),
             delay(RECONNECT_INTERVAL)
           );

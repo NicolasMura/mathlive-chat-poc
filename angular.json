@@ -76,6 +76,16 @@
                 "glob": "**/*",
                 "input": "./libs/frontend-tools/src/lib/assets/",
                 "output": "./assets"
+              },
+              {
+                "glob": "**/*",
+                "input": "./libs/frontend-tools/src/lib/assets/fonts/",
+                "output": "./fonts"
+              },
+              {
+                "glob": "**/*",
+                "input": "./libs/frontend-tools/src/lib/assets/sounds/",
+                "output": "./sounds"
               }
             ],
             "styles": [

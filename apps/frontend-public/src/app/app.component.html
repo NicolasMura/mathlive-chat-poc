@@ -11,11 +11,13 @@
     <mat-sidenav-content>
       <mat-toolbar color="primary" *ngIf="currentUser$ | async" style="background-color: white; color: #2E2E2E;">
         <!-- <h1>{{ (currentMoment$ | async)?.month() }} - V17</h1> -->
-        <h1 style="margin-left: 10px; font-size: 24px; display: flex;">Mathlive Chat POC - {{ (currentUser$ | async)?.username }}</h1>
+        <h1 style="margin-left: 10px; font-size: 24px; display: flex;">Mathlive Chat POC</h1>
         <span style="flex: 1 1 auto;"></span>
-        <button mat-icon-button (click)="sidenav.toggle()" matTooltip="menu">
-          <mat-icon>menu</mat-icon>
+        <button mat-icon-button (click)="sidenav.toggle()" matTooltip="Menu - {{ (currentUser$ | async)?.username }}">
+          <!-- <mat-icon>menu</mat-icon> -->
+          <img [src]="(currentUser$ | async)?.avatar" alt="menu">
         </button>
+        <!-- <div><img [src]="(currentUser$ | async)?.avatar" alt="menu" (click)="sidenav.toggle()" matTooltip="menu"></div> -->
         <!-- <button mat-icon-button (click)="refreshApp()">
           <mat-icon>refresh</mat-icon>
         </button>

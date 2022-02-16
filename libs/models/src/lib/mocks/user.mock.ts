@@ -11,6 +11,7 @@ const getDefaults = (): User => ({
   //   location: 'Paris',
   //   picture: ''
   // },
+  avatar: 'https://avatars.dicebear.com/api/adventurer-neutral/default.svg',
   _id: '61b7c23244fe418be6001a6b'
 });
 

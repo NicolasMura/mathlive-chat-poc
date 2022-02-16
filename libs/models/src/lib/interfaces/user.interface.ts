@@ -9,5 +9,6 @@ export interface IUser {
   username: string;
   isModerator: boolean;
   // profile: IUserProfile;
+  avatar: string;
   _id?: string;
 }

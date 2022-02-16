@@ -20,7 +20,7 @@
     </button>
 
     <mat-error *ngIf="loginError" class="login-error">
-      Erreur : connexion impossible (le serveur semble injoignable :/)
+      {{ loginError }}
     </mat-error>
 
   </form>

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild, ViewChildren, QueryList, Input } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MathfieldElement} from 'mathlive';
 import { UserService, UtilitiesService, WebSocketService, WebSocketMessage, Message } from '@mlchat-poc/frontend-tools';
 import { User, MessageTypes } from '@mlchat-poc/models';
@@ -11,10 +11,8 @@ import * as moment from 'moment';
   selector: 'mlchat-poc-message',
   template: `
     <div [ngClass]="{ 'align-right': message.sender === user.username }">
+      <div><img [src]="'https://avatars.dicebear.com/api/adventurer-neutral/' + message.sender + '.svg'" alt="{{ message.sender + ' avatar' }}" title="{{ message.sender + ' avatar' }}"></div>
       <div *ngIf="!message.isMathliveContent">({{ i }}) - {{ message.sender }} : {{ message.content }} ({{ message.isMathliveContent ? 'math' : 'standard'}})</div>
-      <!-- <div>({{ i }}) - {{ message.sender }} : {{ message.content }} ({{ message.isMathliveContent ? 'math' : 'standard'}})</div> -->
-      <!-- <div #mathfield class="mathfield-wrapper" [style.visibility]="modeMathlive ? 'visible' : 'hidden'"></div> -->
-      <div>{{ mfe.value }}</div>
       <div #mathfield
            [style.visibility]="message.isMathliveContent ? 'visible' : 'hidden'"
            [style.height]="message.isMathliveContent ? 'auto' : '0px'">
@@ -27,6 +25,9 @@ import * as moment from 'moment';
     }
     .align-right {
       text-align: right;
+    }
+    img {
+      max-width: 50px;
     }
   `]
 })
@@ -58,8 +59,14 @@ export class MessageComponent implements OnInit, AfterViewInit {
       console.log(this.mfe);
       this.mfe.setOptions({
         readOnly: true,
-        fontsDirectory: '/assets/fonts/mathlive',
-        soundsDirectory: '/assets/sounds'
+        fontsDirectory: './assets/fonts',
+        soundsDirectory: './assets/sounds'
+        // keybindings: [{
+        //   "key": 'cmd+enter',
+        //   // ifPlatform: 'macos',
+        //   "command": ['insert', '\\sqrt{#0}'],
+        //   // command: ['selectAll'],
+        // }]
       });
     }
   }
@@ -83,7 +90,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   /**
    * Reference to title input for autofocus (desktop mode)
    */
-  @ViewChild('input', { static: true }) input!: ElementRef;
+  @ViewChild('input') input!: ElementRef;
   /**
    * Mathfield element
    */
@@ -158,9 +165,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     // this.webSocketService.getAllMessagesFromServer().subscribe();;
 
     this.messageForm = new FormGroup({
-      message: new FormControl('')
+      message: new FormControl('', Validators.required)
     });
-    this.input.nativeElement.focus();
+    // this.input.nativeElement.focus();
 
     this.userService.getAllUsersFromBackend().subscribe((users: User[]) => {
       console.log(users);
@@ -195,8 +202,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
       // virtualKeyboardMode: 'onfocus',
       virtualKeyboardMode: 'manual',
       // readOnly: true
-      fontsDirectory: '/assets/fonts/mathlive',
-      soundsDirectory: '/assets/sounds'
+      fontsDirectory: './assets/fonts',
+      soundsDirectory: './assets/sounds'
     });
   }
 
@@ -249,6 +256,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     } else {
       this.mathInput = this.messageForm.get('message')?.value;
       this.messageForm.patchValue({ message: this.standardInput });
+      this.input.nativeElement.focus();
     }
   }
 
@@ -256,7 +264,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (this.messageForm.valid && !this.webSocketService.lostConnection) {
       if (this.modeMathlive) {
         this.messageForm.patchValue({ message: this.mfe.value });
-        // this.mfe.value = '';
       }
 
       this.webSocketService.sendMessage(new WebSocketMessage(
@@ -272,6 +279,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       ));
 
       this.messageForm.reset();
+      this.mfe.value = '';
       this.input.nativeElement.focus();
     }
   }

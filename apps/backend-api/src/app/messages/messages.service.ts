@@ -5,7 +5,7 @@ import { WebSocketMessage } from '@mlchat-poc/models';
 export class MessagesService {
   private messages: WebSocketMessage[] = [];
 
-  async getAll(): Promise<WebSocketMessage[]> {
+  getAll(): WebSocketMessage[] {
     console.log('messages in cache : ', this.messages);
     return this.messages;
   }

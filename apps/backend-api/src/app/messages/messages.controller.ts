@@ -9,7 +9,7 @@ export class MessagesController {
   ) {}
 
   @Get('')
-  async getAll(): Promise<WebSocketMessage[]> {
+  getAll(): WebSocketMessage[] {
     return this.messagesService.getAll();
   }
 }

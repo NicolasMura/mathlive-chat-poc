@@ -1,7 +1,7 @@
 .page-home {
   form {
     position: relative;
-    width: 50vw;
+    // width: 50vw;
 
     .mat-form-field,
     .mathfield-wrapper {
@@ -13,36 +13,34 @@
       top: 0px;
     }
   }
-
-  // .align-right {
-  //   text-align: right;
-  // }
 }
 
 ::ng-deep {
-  .mat-form-field-appearance-fill .mat-form-field-flex {
-    border-radius: 8px!important;
-    background-color: white!important;
-  }
+  .page-home {
+    .mat-form-field-appearance-fill .mat-form-field-flex {
+      border-radius: 8px!important;
+      background-color: white!important;
+    }
 
-  .mat-form-field-flex {
-    // outline: 1px solid red;
-    box-shadow: 0 0 8px rgb(0 0 0 / 20%);
-  }
+    .mat-form-field-flex {
+      // outline: 1px solid red;
+      box-shadow: 0 0 8px rgb(0 0 0 / 20%);
+    }
 
-  .mat-form-field-underline {
-    display: none;
-  }
+    .mat-form-field-underline {
+      display: none;
+    }
 
-  .ML__virtual-keyboard-toggle.is-visible {
-    display: none!important;
-  }
+    .ML__virtual-keyboard-toggle.is-visible {
+      display: none!important;
+    }
 
-  math-field {
-    font-size: 32px;
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, .3);
-    box-shadow: 0 0 8px rgba(0, 0, 0, .2);
+    math-field {
+      font-size: 32px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, .3);
+      box-shadow: 0 0 8px rgba(0, 0, 0, .2);
+    }
   }
 }

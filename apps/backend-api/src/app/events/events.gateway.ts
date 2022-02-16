@@ -1,4 +1,4 @@
-
+import { Request } from '@nestjs/common';
 import {
   SubscribeMessage,
   WebSocketGateway,
@@ -12,13 +12,12 @@ import {
 } from '@nestjs/websockets';
 import { from, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-// import { Server } from 'ws';
 import * as WebSocket from 'ws';
 // import { Server, Socket } from 'socket.io';
-import { MessageTypes, WebSocketMessage } from '@mlchat-poc/models';
-import { Get, Request } from '@nestjs/common';
-import { MessagesService } from '../messages/messages.service';
 import * as queryString from 'query-string';
+import { MessageTypes, User, WebSocketMessage } from '@mlchat-poc/models';
+import { MessagesService } from '../messages/messages.service';
+import { UsersService } from '../users/users.service';
 
 
 
@@ -27,33 +26,19 @@ import * as queryString from 'query-string';
 //     origin: '*',
 //   },
 // })
-// @WebSocketGateway(8082)
 @WebSocketGateway(8082, { transports: ['websocket'] })
-// @WebSocketGateway(8082, {
-//   namespace: 'events',
-//   transports: ['websocket']
-// })
-// @WebSocketGateway(8082, { transports: ['websocket'] })
-// @WebSocketGateway({ port: 8082, transports: ['websocket'] })
-// @WebSocketGateway({ path: '/api' })
-// @WebSocketGateway({ port: 8082, path: '/api', origin: 'localhost:3334/api' })
 export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-// export class EventsGateway {
-  @WebSocketServer()
-  server: WebSocket.Server;
-  // server;
-  // wsClients = [];
+  @WebSocketServer() server: WebSocket.Server;
   wsClients = new Map<WebSocket, string>();
-  public connectedSockets: { [key: string]: any[] } = {};
-
+  connectedSockets: { [key: string]: any[] } = {};
   usersCount = 0;
 
   constructor(
+    private userService: UsersService,
     private messagesService: MessagesService
   ) {}
 
   afterInit(server: WebSocket.Server) {
-    // this.server = server;
     console.log('Init');
     // console.log(server);
     this.server.emit('testing', { do: 'stuff' });
@@ -61,10 +46,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   async handleConnection(client: WebSocket, @Request() req: any) {
     console.log('A client has connected');
-    // console.log(client);
-    // console.log(req);
-    // console.log(req.url);
-    // console.log(req.url.replace('/', ''));
     const parsedUrl = queryString.parse(req.url.replace('/', ''), { arrayFormatSeparator: '&' });
     const username = (parsedUrl?.username as string) || 'Unavailable';
     console.log(username);
@@ -90,15 +71,15 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     //   client.close(4403, 'set JWT cookie to authenticate');
     // }
 
-    // this.wsClients.push(client);
     this.wsClients.set(client, username);
-    // A client has connected
-    // this.usersCount++;
-    // console.log(this.usersCount);
     console.log(this.wsClients.size);
 
+    if (!this.userService.findUserByUsername(username)) {
+      console.log('Add new user : ', username);
+      this.userService.createUser(new User(username, false, ''));
+    }
+
     // Notify connected clients of current users
-    // this.server.emit('Nb users', this.usersCount);
     const newConnectionMessage = new WebSocketMessage(
       'events',
       {
@@ -114,22 +95,29 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         c.send(JSON.stringify(newConnectionMessage));
       }
     }
-    // return { event: 'events', data: 'Nb users :' + this.usersCount };
+
+    console.log('Users in cache : ', this.userService.findAll());
+    // return { event: 'events', data: 'Nb users :' + this.wsClients.size };
   }
 
   async handleDisconnect(client: WebSocket) {
     console.log('A client has disconnected');
     // A client has disconnected
-    // this.usersCount--;
-    // console.log(this.usersCount);
+
+    const username = this.wsClients.get(client);
 
     // Notify connected clients of current users
     // this.server.emit('Nb users', this.usersCount);
     for (const [c, id] of this.wsClients) {
       // console.log(c);
       if (c != client) {
-        c.send(JSON.stringify({ event: 'events', data: `A client has disconnected (${this.wsClients.get(client)})` }));
+        c.send(JSON.stringify({ event: 'events', data: `A client has disconnected (${username})` }));
       }
+    }
+
+    if (this.userService.findUserByUsername(username)) {
+      console.log('Delete existing user : ', username);
+      this.userService.deleteUser(username);
     }
 
     this.wsClients.delete(client);
@@ -175,3 +163,42 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   //   return data;
   // }
 }
+
+
+
+
+
+// TESTS
+// import { OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway } from '@nestjs/websockets';
+
+// @WebSocketGateway()
+// export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  
+//   public connectedSockets: { [key: string]: any[] } = {};
+
+//   async handleConnection(client: any, req: Request) {
+//     try {
+//       const token = req.headers['cookie']
+//         .split(';')
+//         .map(p => p.trim())
+//         .find(p => p.split('=')[0] === 'token')
+//         .split('=')[1];
+
+//       // for this example, we simply set userId by token
+//       client.userId = token;
+
+//       if (!this.connectedSockets[client.userId])
+//         this.connectedSockets[client.userId] = [];
+
+//       this.connectedSockets[client.userId].push(client);
+//     } catch (error) {
+//       client.close(4403, 'set JWT cookie to authenticate');
+//     }
+//   }
+
+//   handleDisconnect(client: any) {
+//     this.connectedSockets[client.userId] = this.connectedSockets[
+//       client.userId
+//     ].filter(p => p.id !== client.id);
+//   }
+// }

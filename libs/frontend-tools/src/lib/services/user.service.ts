@@ -91,10 +91,11 @@ export class UserService extends GlobalService {
           user.username || '',
           user.isModerator,
           // user.profile,
+          `https://avatars.dicebear.com/api/adventurer-neutral/${user.username || 'bob'}.svg`
         )),
         tap((user: User) => this.startSession(user)),
         catchError(error => {
-          this.cancelSession();
+          // this.cancelSession();
           return this.handleError(error);
         })
       );
@@ -128,6 +129,7 @@ export class UserService extends GlobalService {
         user.username,
         user.isModerator,
         // user.profile,
+        user.avatar
       );
 
       console.log(newUser);
@@ -155,7 +157,8 @@ export class UserService extends GlobalService {
         map((users: User[]) => {
           const usersWellFormatted = users.map((user: User) => new User(
             user.username || '',
-            user.isModerator
+            user.isModerator,
+            user.avatar
           ));
 
           this.users = usersWellFormatted;

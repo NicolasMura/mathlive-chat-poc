@@ -7,31 +7,38 @@ export class UsersService {
   private currentUser: User;
 
   async login(user: User): Promise<User> {
-    console.log(this.users);
-    const existingUser: User = this.users.find((u: User) => u.username === user.username);
+    console.log('Users in cache : ', this.users);
+    const existingUser: User = await this.findUserByUsername(user.username);
     console.log('existingUser:');
     console.log(existingUser);
 
     if (existingUser) {
       Logger.error(`Username ${user.username} already taken`);
       // throw new ForbiddenException(`Username ${user.username} already taken`);
+      throw new ConflictException(`Username ${user.username} already taken`);
     }
 
-    this.users.push(user);
+    // this.users.push(user);
     this.setCurrentUser(user);
     return this.currentUser;
   }
 
-  async getCurrentUser(): Promise<User> {
+  getCurrentUser(): User {
     return this.currentUser;
   }
 
-  async setCurrentUser(user: User): Promise<User> {
+  setCurrentUser(user: User): User {
     this.currentUser = user;
     return this.currentUser;
   }
 
-  async findUserById(id: string): Promise<User | undefined> {
+  findUserByUsername(username: string): User {
+    const user: User = this.users.find(user => user.username === username);
+
+    return user;
+  }
+
+  findUserById(id: string): User {
     const user: User = this.users.find(user => user._id === id);
 
     if (!user) {
@@ -42,16 +49,19 @@ export class UsersService {
     return user;
   }
 
-  async findAll(): Promise<User[]> {
+  findAll(): User[] {
+    console.log('Users in cache : ', this.users);
     return this.users;
   }
 
-  async createUser(user: User): Promise<Partial<User> | undefined> {
+  createUser(user: User): Partial<User> {
     const existingUsername = this.users.find(u => u.username === user.username);
 
     if (existingUsername) {
       Logger.error(`This username is already taken`);
       throw new ConflictException(`This username already taken`);
+      // Logger.error(`Username ${user.username} already taken`);
+      // throw new ForbiddenException(`Username ${user.username} already taken`);
     }
 
     Logger.log('newUser');
@@ -59,5 +69,18 @@ export class UsersService {
     this.users.push(user);
 
     return user;
+  }
+
+  deleteUser(username: string): string {
+    const existingUsername = this.users.find((user: User) => user.username === username);
+
+    if (!existingUsername) {
+      Logger.error(`User with id ${username} not found`);
+      throw new NotFoundException(`User with id ${username} not found`);
+    }
+
+    this.users = this.users.filter((user: User) => user.username !== username);
+
+    return username;
   }
 }
