@@ -20,13 +20,12 @@ import { MessagesService } from '../messages/messages.service';
 import { UsersService } from '../users/users.service';
 
 
-
 // @WebSocketGateway({
 //   cors: {
 //     origin: '*',
 //   },
 // })
-@WebSocketGateway(8082, { transports: ['websocket'] })
+@WebSocketGateway({ transports: ['websocket'] })
 export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: WebSocket.Server;
   wsClients = new Map<WebSocket, string>();

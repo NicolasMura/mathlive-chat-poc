@@ -5,6 +5,7 @@ export * from './lib/animations/fade-in-out.animation';
 export * from './lib/directives/autofocus.directive';
 export * from './lib/components/something-is-broken/something-is-broken.component';
 export * from './lib/guards/user-logged.guard';
+export * from './lib/models/build-infos.model';
 export * from './lib/models/user.model';
 export * from './lib/models/websocket-message.model';
 export * from './lib/services/error-handling.service';

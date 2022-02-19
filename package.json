@@ -10,6 +10,7 @@
     "start:frontend-public": "nx serve frontend-public --hmr",
     "start:backend-api": "nx serve backend-api",
     "build": "ng build",
+    "generate-build-infos": "node node_modules/typescript/bin/tsc scripts/generate-build-infos.ts && node scripts/generate-build-infos.js --no-version --no-message --jenkinsBuildNumber $BUILD_ID",
     "test": "ng test",
     "lint": "nx workspace-lint && ng lint",
     "e2e": "ng e2e",
@@ -29,8 +30,7 @@
     "dep-graph": "nx dep-graph",
     "help": "nx help",
     "deploy:frontend-public:dockerhub": "nx build frontend-public --prod && docker build -t mlchat-poc-frontend-public -f .docker/Dockerfile.frontend-public . && docker tag mlchat-poc-frontend-public nicolasmura/mlchat-poc-frontend-public && docker push nicolasmura/mlchat-poc-frontend-public",
-    "deploy:backend-api:dockerhub": "docker build -t mlchat-poc-backend-api -f .docker/Dockerfile.backend-api . && docker tag mlchat-poc-backend-api nicolasmura/mlchat-poc-backend-api && docker push nicolasmura/mlchat-poc-backend-api",
-    "deploy:database:dockerhub": "docker build -t mlchat-poc-database -f .docker/Dockerfile.mongodb . --no-cache && docker tag mlchat-poc-database nicolasmura/mlchat-poc-database && docker push nicolasmura/mlchat-poc-database"
+    "deploy:backend-api:dockerhub": "docker build -t mlchat-poc-backend-api -f .docker/Dockerfile.backend-api . && docker tag mlchat-poc-backend-api nicolasmura/mlchat-poc-backend-api && docker push nicolasmura/mlchat-poc-backend-api"
   },
   "private": false,
   "dependencies": {

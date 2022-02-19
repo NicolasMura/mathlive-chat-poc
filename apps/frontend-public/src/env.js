@@ -5,7 +5,7 @@
   window.__env = window.__env || {};
 
   const backendHostname = 'localhost:3334';
-  // const backendHostname = 'dev.family-calendar.nicolasmura.com';
+  // const backendHostname = 'mathlive-chat-poc.nicolasmura.com';
   const secure   = false;
   const protocol = secure ? 'https' : 'http';
   const ws       = secure ? 'wss' : 'ws';
@@ -14,9 +14,9 @@
   // Environment variables
   window.__env.production = false;
   window.__env.hmr = true;
-  window.__env.wsEndpoint = ws + '://localhost:8082';
+  window.__env.wsEndpoint = ws + '://' + backendHostname;
   window.__env.backendApi = {};
-  window.__env.backendApi.baseUrl     = protocol + '://' + backendHostname + apiPath;
-  window.__env.backendApi.baseUrlUser = protocol + '://' + backendHostname + apiPath + '/users';
+  window.__env.backendApi.baseUrl        = protocol + '://' + backendHostname + apiPath;
+  window.__env.backendApi.baseUrlUser    = protocol + '://' + backendHostname + apiPath + '/users';
   window.__env.backendApi.baseUrlMessage = protocol + '://' + backendHostname + apiPath + '/messages';
 })(this);

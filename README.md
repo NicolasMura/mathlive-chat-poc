@@ -21,8 +21,6 @@ Fullstack monorepo for a simple chat with visual math equations feature powered 
 - [Unit tests with Jest](#unit-tests-with-jest)
 - [End-to-end (e2e) tests with Cypress](#end-to-end-e2e-tests-with-cypress)
 - [Interesting stuffs to do / Nice to have](#interesting-stuffs-to-do--nice-to-have)
-- [Common troubleshootings](#common-troubleshootings)
-  - [API Container is unhealthy and doesn't start](#api-container-is-unhealthy-and-doesnt-start)
 - [A few words about Nx](#a-few-words-about-nx)
   - [CheatSheet](#cheatsheet)
 
@@ -33,6 +31,7 @@ To contribute to this project and run it locally, you will need:
 - [Node JS >= v16.0 & NPM >= 8.1.0](https://nodejs.org/en)
 - [Angular 12.x](https://angular.io)
 - [Typescript >= 4.3.5](https://www.typescriptlang.org)
+- [Docker >= 20.10.11](https://www.docker.com)
 
 > :bulb: **_Tip_**
 >
@@ -149,51 +148,6 @@ See also https://github.com/molily/angular-form-testing
 
 * Signup form (see https://github.com/molily/angular-form-testing)
 
-# Common troubleshootings
-
-## API Container is unhealthy and doesn't start
-
-You have:
-
-```bash
-  $ docker-compose --env-file .env up -d # OR docker-compose --env-file .env up -d database
-  Creating photos-database ... done
-
-  ERROR: for api Container "2b24bf6f0f69 (or whatever)" is unhealthy.
-```
-
-In general, that's because:
-
-- you removed the `MONGODB_DB_MAIN` database defined in `.env` file, or changed some critical environment variables
-- you removed the`users` collection in `MONGODB_DB_MAIN`
-- you changed, added or removed some critical environment variables (probably in .env file)
-
-The solutions is to double check:
-
-- MongoDB port variable is named `MONGODB_PORT` in the following files:
-  - `.env`
-  - `docker-compose.yml`
-  - `scripts/database-healthcheck.sh`
-- Database port in `MONGODB_URI` value is the same as `MONGODB_PORT` value
-- Host MongoDB log folder has correct permissions: `sudo chmod 777 .docker/mongodb_vol/log`
-- Apache log folder has correct ownership: `sudo chown -R <you>:www-data /var/log/<WEBAPP_FOLDER>`
-
-For Mac OS X users, also try to clean the bind mounted volume for MongoDB `/data/db` (see `MONGODB_DB_DIR_FOR_MAC_ONLY` in `.env ` and `docker-compose.macosx-override.yml` files):
-
-```bash
-  rm -R .docker/mongodb_vol/db
-```
-
-> :information_source: **_Note_**
->
-> `MONGODB_PORT` is used to check database health when container is starting (via `scripts/database-healthcheck.sh` script), so if you change it you will need to re-build the database image:
->
-> ```bash
->   docker build -t mlchat-poc-database -f .docker/Dockerfile.mongodb . --no-cache && docker tag mlchat-poc-database nicolasmura/mlchat-poc-database
->   docker push nicolasmura/mlchat-poc-database
->   docker-compose --env-file .env down
->   docker-compose --env-file .env up -d # OR docker-compose --env-file .env up -d database
-> ```
 
 # A few words about Nx
 

@@ -3,7 +3,7 @@ import { fadeInOutAnimation } from '../../animations/fade-in-out.animation';
 
 
 @Component({
-  selector: 'zphotos-something-is-broken',
+  selector: 'mathpoc-something-is-broken',
   templateUrl: './something-is-broken.component.html',
   styleUrls: ['./something-is-broken.component.scss'],
   animations: [fadeInOutAnimation]

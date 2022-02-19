@@ -4,7 +4,7 @@ version: "3.7" # specify docker-compose version
 services:
   frontend: # name of Angular app service
     image: nicolasmura/mlchat-poc-frontend-public
-    container_name: photos-frontend
+    container_name: mlchat-poc-frontend-public
     env_file:
       - .env
     ports:
@@ -20,17 +20,18 @@ services:
 
   api: # name of Node JS app
     image: nicolasmura/mlchat-poc-backend-api
-    container_name: photos-backend
+    container_name: mlchat-poc-backend
     env_file:
       - .env
     ports:
       - ${NODE_PORT}:${NODE_PORT}
     volumes:
       - .env:/usr/mlchat-poc/backend-api/dist/apps/backend-api/.env
-      - .docker/${UPLOAD_FOLDER_TMP}:/usr/mlchat-poc/backend-api/${UPLOAD_FOLDER_TMP}
     restart: on-failure
     networks:
       mlchat-poc-network:
+        aliases:
+          - mlchat-poc-network
 
 networks:
   mlchat-poc-network:
