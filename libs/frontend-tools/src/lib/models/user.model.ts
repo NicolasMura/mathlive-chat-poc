@@ -19,7 +19,7 @@ export class User implements IUser {
     this.username = username;
     this.isModerator = isModerator;
     // this.profile = profile;
-    this.avatar = avatar || 'https://avatars.dicebear.com/api/adventurer-neutral/default.svg';
+    this.avatar = avatar || 'https://avatars.dicebear.com/api/avataaars/default.svg';
     this._id = _id;
   }
 }

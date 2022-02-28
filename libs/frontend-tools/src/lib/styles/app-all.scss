@@ -95,7 +95,7 @@ header {
 
 /* main */
 main {
-  padding: 20px;
+  // padding: 20px;
 }
 
 /* tooltips */
@@ -118,4 +118,62 @@ main {
 
 .cpt-bg-color-grey {
   background-color: lightgrey;
+}
+
+/*
+===============
+    Env colors
+===============
+*/
+
+$envColors: (
+  dev: #85C9E8,
+  prod: #EB4964
+);
+
+.envReminder {
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  height: 5px;
+  width: 100%;
+
+  .envName {
+    position: absolute;
+    padding-left: 5px;
+    color: white;
+
+    .triangle {
+      border-right: 15px solid transparent;
+      top: 4px;
+      right: -15px;
+      position: absolute;
+      background: none;
+    }
+  }
+
+  &.local,
+  &.dev {
+    background: map-get($envColors, 'dev');
+
+    .envName {
+      background-color: map-get($envColors, 'dev');
+    }
+
+    .triangle {
+      border-top: 15px solid map-get($envColors, 'dev');
+    }
+  }
+
+  &.prod {
+    background: map-get($envColors, 'prod');
+
+    .envName {
+      background-color: map-get($envColors, 'prod');
+    }
+
+    .triangle {
+      border-top: 15px solid map-get($envColors, 'prod');
+    }
+  }
 }

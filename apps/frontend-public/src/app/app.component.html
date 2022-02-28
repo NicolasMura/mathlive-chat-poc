@@ -1,5 +1,13 @@
 <div class="app-root">
-  <mat-sidenav-container style="background-color: white;">
+  <div *ngIf="['local', 'dev'].includes(utilitiesService.environmentClass)"
+       class="envReminder {{ utilitiesService.environmentClass }}">
+    <div class="envName">
+      <span>{{ utilitiesService.environmentClass }}</span>
+      <div class="triangle {{ utilitiesService.environmentClass }}"></div>
+    </div>
+  </div>
+
+  <mat-sidenav-container [ngStyle]="{'background-color': (currentUser$ | async) ? 'white' : ''}">
     <mat-sidenav #sidenav mode="over" position="end"
                  [fixedInViewport]="true">
       <mat-nav-list *ngIf="currentUser$ | async">
@@ -9,7 +17,7 @@
     </mat-sidenav>
 
     <mat-sidenav-content>
-      <mat-toolbar color="primary" *ngIf="currentUser$ | async" style="background-color: white; color: #2E2E2E;">
+      <mat-toolbar color="primary" *ngIf="currentUser$ | async" class="shadow" style="color: white;">
         <!-- <h1>{{ (currentMoment$ | async)?.month() }} - V17</h1> -->
         <h1 style="margin-left: 10px; font-size: 24px; display: flex;">Mathlive Chat POC</h1>
         <span style="flex: 1 1 auto;"></span>

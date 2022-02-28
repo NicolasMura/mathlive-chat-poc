@@ -89,7 +89,7 @@
               }
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
               "apps/frontend-public/src/styles.scss"
             ],
             "stylePreprocessorOptions": {

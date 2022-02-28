@@ -66,7 +66,7 @@ export class UserService extends GlobalService {
     if (this.usernameExists()) {
       // this.startSession(this.getCurrentUser());
       this.login(this.getCurrentUser()).subscribe((user: User) => {
-        console.log(user);
+        // console.log(user);
       }, error => {
         // @TODO : gestion fine des erreurs avec le backend + handleError()
         console.error(error);
@@ -91,7 +91,7 @@ export class UserService extends GlobalService {
           user.username || '',
           user.isModerator,
           // user.profile,
-          `https://avatars.dicebear.com/api/adventurer-neutral/${user.username || 'bob'}.svg`
+          `https://avatars.dicebear.com/api/avataaars/${user.username || 'bob'}.svg`
         )),
         tap((user: User) => this.startSession(user)),
         catchError(error => {
@@ -132,7 +132,6 @@ export class UserService extends GlobalService {
         user.avatar
       );
 
-      console.log(newUser);
       this.currentUserLocalStorage = JSON.stringify(user);
       this.userStore.currentUser = user;
       this.currentUser.next(Object.assign({}, this.userStore).currentUser);

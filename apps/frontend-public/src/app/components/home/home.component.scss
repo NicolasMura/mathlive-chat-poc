@@ -1,25 +1,65 @@
 .page-home {
-  form {
-    position: relative;
-    // width: 50vw;
+  position: relative;
+  background-color: white;
 
-    .mat-form-field,
-    .mathfield-wrapper {
-      width: 80%;
-    }
+  .messages {
+    height: calc(100vh - 64px - 81px);
+    overflow-y: scroll;
+    padding: 20px;
+    color: #000000de;
+  }
 
-    .mathfield-wrapper {
-      position: absolute;
-      top: 0px;
+  .actions {
+    height: 80px;
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    padding: 10px;
+    background-color: #FAFAFA;
+
+    form {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 100%;
+
+      .mat-form-field,
+      .mathfield-wrapper {
+        flex: auto;
+        height: 100%;
+        margin: 0 20px;
+      }
+
+      .mathfield-wrapper {
+        position: absolute;
+        top: 0px;
+        left: 56px;
+      }
     }
   }
 }
 
 ::ng-deep {
   .page-home {
+    .mat-input-element {
+      color: #000000de;
+    }
+
+    .mat-form-field-label {
+      color: rgba(0, 0, 0, 0.5);
+    }
+
+    .mat-form-field-invalid .mat-input-element {
+      caret-color: rgba(0, 0, 0, .5)!important;
+    }
+
+    .mat-form-field.mat-form-field-invalid .mat-form-field-label {
+      color: rgba(0, 0, 0, .5)!important;
+    }
+
     .mat-form-field-appearance-fill .mat-form-field-flex {
       border-radius: 8px!important;
-      background-color: white!important;
+      // background-color: #C43C5C;
     }
 
     .mat-form-field-flex {
@@ -32,15 +72,17 @@
     }
 
     .ML__virtual-keyboard-toggle.is-visible {
-      display: none!important;
+      // display: none!important;
     }
 
     math-field {
+      background-color: white;
+      color: #000000de;
       font-size: 32px;
       padding: 8px;
       border-radius: 8px;
       border: 1px solid rgba(0, 0, 0, .3);
-      box-shadow: 0 0 8px rgba(0, 0, 0, .2);
+      box-shadow: 0 0 4px rgba(0, 0, 0, .2);
     }
   }
 }

@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private utilitiesService: UtilitiesService
+    public utilitiesService: UtilitiesService
   ) {
     console.log(environment);
     this.buildInfos = buildInfos;

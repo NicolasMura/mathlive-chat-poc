@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild, ViewChildren, QueryList, Input } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, Renderer2, ViewChild, Input, ViewChildren, QueryList } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatFormField } from '@angular/material/form-field';
 import { MathfieldElement} from 'mathlive';
 import { UserService, UtilitiesService, WebSocketService, WebSocketMessage, Message } from '@mlchat-poc/frontend-tools';
 import { User, MessageTypes } from '@mlchat-poc/models';
@@ -11,9 +12,13 @@ import * as moment from 'moment';
   selector: 'mlchat-poc-message',
   template: `
     <div [ngClass]="{ 'align-right': message.sender === user.username }">
-      <div><img [src]="'https://avatars.dicebear.com/api/adventurer-neutral/' + message.sender + '.svg'" alt="{{ message.sender + ' avatar' }}" title="{{ message.sender + ' avatar' }}"></div>
-      <div *ngIf="!message.isMathliveContent">({{ i }}) - {{ message.sender }} : {{ message.content }} ({{ message.isMathliveContent ? 'math' : 'standard'}})</div>
-      <div #mathfield
+    <img [src]="'https://avatars.dicebear.com/api/avataaars/' + message.sender + '.svg'"
+         alt="{{ message.sender + ' avatar' }}"
+         title="{{ message.sender + ' avatar' }}">
+      <div *ngIf="!message.isMathliveContent">
+        {{ message.sender }} : {{ message.content }}
+      </div>
+      <div #mathfield class="scrollable"
            [style.visibility]="message.isMathliveContent ? 'visible' : 'hidden'"
            [style.height]="message.isMathliveContent ? 'auto' : '0px'">
       </div>
@@ -28,6 +33,9 @@ import * as moment from 'moment';
     }
     img {
       max-width: 50px;
+    }
+    .scrollable {
+      pointer-events: none; /* to allow page scrolling on mobile device */
     }
   `]
 })
@@ -46,27 +54,21 @@ export class MessageComponent implements OnInit, AfterViewInit {
   @ViewChild('mathfield') mathfield!: ElementRef;
 
   constructor(
-    private el: ElementRef,
     private renderer: Renderer2,
   ) { }
 
   ngOnInit(): void {
-    console.log(this.message.isMathliveContent);
+    // console.log(this.message.isMathliveContent);
     if (this.message.isMathliveContent) {
       // this.mfe.value = "x=\\frac{-b\\pm \\sqrt{b^2-4ac}}{2a}";
-      console.log(this.message.content);
+      // console.log(this.message.content);
       this.mfe.value = this.message.content;
-      console.log(this.mfe);
+      // console.log(this.mfe);
       this.mfe.setOptions({
         readOnly: true,
+        virtualKeyboardMode: 'off',
         fontsDirectory: './assets/fonts',
         soundsDirectory: './assets/sounds'
-        // keybindings: [{
-        //   "key": 'cmd+enter',
-        //   // ifPlatform: 'macos',
-        //   "command": ['insert', '\\sqrt{#0}'],
-        //   // command: ['selectAll'],
-        // }]
       });
     }
   }
@@ -88,54 +90,55 @@ export class HomeComponent implements OnInit, AfterViewInit {
    */
   messageForm!: FormGroup;
   /**
-   * Reference to title input for autofocus (desktop mode)
+   * Reference to input
    */
-  @ViewChild('input') input!: ElementRef;
+  input!: ElementRef;
+  /**
+   * Setter for input (autofocus - desktop mode)
+   */
+  @ViewChild('input') set _input(input: ElementRef) {
+    if (input && !this.input) {
+      setTimeout(() => {
+        this.input = input;
+        input.nativeElement.focus();
+      }, 100);
+    }
+  };
+  /**
+   * Reference to input material FormField
+   */
+  userInputFormfield!: MatFormField;
+  /**
+   * Setter for input material FormField
+   */
+  @ViewChild('userInputFormfield') set _userInputFormfield(input: MatFormField) {
+    if (input) {
+      this.userInputFormfield = input;
+      setTimeout(() => {
+        this.mfeWidth = this.userInputFormfield._elementRef.nativeElement.offsetWidth;
+      }, 100);
+    }
+  }
   /**
    * Mathfield element
    */
   mfe = new MathfieldElement();
   /**
+   * Mathfield element width
+   */
+  mfeWidth!: number;
+  /**
+   * Actions bar element height
+   */
+  actionsBarHeight = 80;
+  /**
+   * Virtual keyboard element height
+   */
+  virtualKeyboardHeight!: number;
+  /**
    * Reference to mathfield input
    */
   @ViewChild('mathfield') mathfield!: ElementRef;
-  /**
-   * Get multiple MessageComponent dynamically
-   */
-  @ViewChildren(MessageComponent) set msgComponents(messagesComponents: QueryList<MessageComponent>) {
-  // @ViewChildren(MessageComponent) set msgComponents(messagesComponents: QueryList<ElementRef<MessageComponent>>) {
-  // @ViewChildren(ElementRef) set msgComponents(messagesComponents: QueryList<ElementRef>) {
-    console.log(messagesComponents);
-
-    if (messagesComponents) {
-      messagesComponents.forEach((msgComponent: MessageComponent) => {
-      // messagesComponents.forEach((msgComponent: ElementRef<MessageComponent>) => {
-        // console.log(msgComponent);
-        if (msgComponent.message.isMathliveContent) {
-          console.log(msgComponent);
-          // console.log(this.);
-        // if (msgComponent.nativeElement.message.isMathliveContent) {
-        //   this.renderer.appendChild(msgComponent.nativeElement, this.mfe);
-        }
-      });
-    }
-    // this.matChipLists = matChipLists;
-
-    // if (matChipLists) {
-    //   if (!this.matChipListsSubscriptions) {
-    //     matChipLists.forEach((mcl: MatChipList, index: number) => {
-    //       // Trigger manually error state on chip lists
-    //       const newSub: RxjsSubscription = (this.servicePriceForm.controls.propertiesPrice as FormArray)
-    //         .at(index)
-    //         .get('propertyValues').statusChanges.subscribe((status: string) => {
-    //           this.matChipLists.find((m: MatChipList, i: number) => i === index).errorState = status === 'INVALID';
-    //         });
-
-    //       (this.matChipListsSubscriptions || (this.matChipListsSubscriptions = [])).push(newSub);
-    //     });
-    //   }
-    // }
-  };
   /**
    * Tell us if Mathlive Virtual Keyboard is displayed or not
    */
@@ -152,6 +155,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
    * Mathlive user input (LateX)
    */
   mathInput = '';
+  /**
+   * Reference to messages container for scrolling convenience
+   */
+  @ViewChild('messagesContainer', { static: true }) messagesContainer!: ElementRef;
+  /**
+   * @TODO see if useful or not
+   * Reference to messages
+   */
+  @ViewChildren('messages') messages!: QueryList<any>;
 
   constructor(
     private el: ElementRef,
@@ -167,10 +179,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.messageForm = new FormGroup({
       message: new FormControl('', Validators.required)
     });
-    // this.input.nativeElement.focus();
 
     this.userService.getAllUsersFromBackend().subscribe((users: User[]) => {
-      console.log(users);
+      // console.log(users);
     });
 
     // subscribe to WebSocket messages
@@ -190,39 +201,75 @@ export class HomeComponent implements OnInit, AfterViewInit {
     // subscribe to WebSocket reconnection to update view
     this.webSocketService.needToFetchMessages$.subscribe((reconnect: boolean) => {
       if (reconnect) {
-        this.webSocketService.getAllMessagesFromServer();
+        this.webSocketService.getAllMessagesFromServer().subscribe((messages: Message[]) => {
+          // automatic scroll to bottom to show last messages
+          console.log('GOOOO');
+          setTimeout(() => {
+            this.scrollToBottom();
+          }, 100);
+        });
       }
     });
 
     // this.mfe.value = "x=\\frac{-b\\pm \\sqrt{b^2-4ac}}{2a}";
     this.mfe.value = "";
     this.mathInput = this.mfe.value;
-    console.log(this.mfe);
     this.mfe.setOptions({
-      // virtualKeyboardMode: 'onfocus',
-      virtualKeyboardMode: 'manual',
+      virtualKeyboardMode: 'manual', // onfocus
       // readOnly: true
       fontsDirectory: './assets/fonts',
-      soundsDirectory: './assets/sounds'
+      soundsDirectory: './assets/sounds',
+      virtualKeyboardTheme: 'material', // apple
+      // keybindings: [{
+      //   "key": 'cmd+enter',
+      //   // ifPlatform: 'macos',
+      //   "command": ['insert', '\\sqrt{#0}'],
+      //   // command: ['selectAll'],
+      // }]
     });
   }
 
   ngAfterViewInit(): void {
     this.renderer.appendChild(this.mathfield.nativeElement, this.mfe);
 
-    this.mfe.addEventListener('input', (test: Event) => {
-      console.log(test);
+    this.mfe.addEventListener('input', (event: Event) => {
+      // adjust actions bar height
+      setTimeout(() => {
+        this.actionsBarHeight = this.mfe.clientHeight + 20; // 20px padding
+      }, 200);
+
       this.messageForm.patchValue({ message: this.mfe.value });
     });
 
-    this.mfe.addEventListener('virtual-keyboard-toggle', (test: Event) => {
-      // console.log(test);
-      // console.log(document.querySelector('.ML__keyboard.is-visible'));
-      // console.log(this.mfe.virtualKeyboardState);
+    this.mfe.addEventListener('virtual-keyboard-toggle', (event: Event) => {
       setTimeout(() => {
         this.isVirtualKeyboardDisplayed = this.mfe.virtualKeyboardState === 'visible' || false;
-      }, 200); // needed to get toggleMathFieldVirtualKeyboard working
+        this.toggleVirtualKeyboardToggleVisibility(this.isVirtualKeyboardDisplayed);
+
+        // move actions bar to virtual keyboard height
+        this.virtualKeyboardHeight = document.querySelector('.ML__keyboard')?.firstElementChild?.clientHeight || 0;
+      }, 200); // needed to get toggleMathFieldVirtualKeyboard working and to have enough time when click on "send" button
     });
+
+    this.messages?.changes.subscribe((newMessage: any) => {
+      // console.log(newMessage);
+    });
+  }
+
+  public toggleVirtualKeyboardToggleVisibility(isVirtualKeyboardDisplayed: boolean): void {
+    const virtualKeyboardElement = this.el.nativeElement.querySelector('.mathfield-wrapper math-field');
+    const shadow = virtualKeyboardElement.shadowRoot;
+    const keyboardToggle = shadow.querySelector('.ML__virtual-keyboard-toggle');
+
+    if (isVirtualKeyboardDisplayed) {
+      keyboardToggle.style.visibility = 'hidden';
+    } else {
+      if (this.modeMathlive) {
+        keyboardToggle.style.visibility = 'visible';
+      } else {
+        keyboardToggle.style.visibility = 'hidden';
+      }
+    }
   }
 
   public sortMessagesByUnixDate(messages: Message[]): Message[] {
@@ -234,12 +281,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   public toggleMathFieldVirtualKeyboard(): void {
+    this.mfeWidth = this.userInputFormfield._elementRef.nativeElement.offsetWidth;
+
     if (!this.isVirtualKeyboardDisplayed) {
-      const virtualKeyboardElement = this.el.nativeElement.querySelector('math-field');
+      const virtualKeyboardElement = this.el.nativeElement.querySelector('.mathfield-wrapper math-field');
       const shadow = virtualKeyboardElement.shadowRoot;
-      const keyboard = shadow.querySelector('.ML__virtual-keyboard-toggle');
-      // console.log(keyboard);
-      keyboard.click();
+      const keyboardToggle = shadow.querySelector('.ML__virtual-keyboard-toggle');
+      keyboardToggle.click();
     }
   }
 
@@ -250,13 +298,28 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (this.modeMathlive) {
       this.standardInput = this.messageForm.get('message')?.value;
       this.messageForm.patchValue({ message: this.mathInput });
+
       setTimeout(() => {
+        // adjust actions bar height
+        this.actionsBarHeight = this.mfe.clientHeight + 20; // 20px padding
+
         this.toggleMathFieldVirtualKeyboard();
-      }, 200); // needed to get focus on #mathfield
+      }, 200); // needed to get actions bar height update + focus on #mathfield
     } else {
       this.mathInput = this.messageForm.get('message')?.value;
       this.messageForm.patchValue({ message: this.standardInput });
-      this.input.nativeElement.focus();
+
+      setTimeout(() => {
+        // reinitialize actions bar height
+        this.actionsBarHeight = 80;
+
+        this.input.nativeElement.focus();
+      }, 200); // needed to get actions bar height update + focus on input
+
+      const virtualKeyboardElement = this.el.nativeElement.querySelector('.mathfield-wrapper math-field');
+      const shadow = virtualKeyboardElement.shadowRoot;
+      const keyboardToggle = shadow.querySelector('.ML__virtual-keyboard-toggle');
+      keyboardToggle.style.visibility = 'hidden';
     }
   }
 
@@ -279,19 +342,37 @@ export class HomeComponent implements OnInit, AfterViewInit {
       ));
 
       this.messageForm.reset();
+      this.standardInput = '';
       this.mfe.value = '';
       this.input.nativeElement.focus();
+
+      // automatic scroll to bottom to show last messages
+      setTimeout(() => {
+        this.scrollToBottom();
+      }, 100);
+    }
+  }
+
+  /**
+   * Scroll to the end of messages list
+   */
+  scrollToBottom = () => {
+    try {
+      this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight + 50;  // 20px padding
+    } catch (err) {
+      console.log(err);
     }
   }
 
   /**
    * Scan for CTRL + Enter event for quick login access
+   * @TODO semble entrer en conflit avec les shortcuts du virtual keyboard apple / android
    */
   @HostListener('window:keydown', ['$event'])
   onKeyPress($event: KeyboardEvent): void {
-    if (($event.ctrlKey || $event.metaKey) && $event.code === 'Enter') {
-      // this.input.nativeElement.focus();
-      this.sendMessage();
-    }
+    // if (($event.ctrlKey || $event.metaKey) && $event.code === 'Enter') {
+    //   // this.input.nativeElement.focus();
+    //   this.sendMessage();
+    // }
   }
 }

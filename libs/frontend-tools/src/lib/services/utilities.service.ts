@@ -1,5 +1,4 @@
-import { Injectable, Inject, InjectionToken } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, Inject, InjectionToken } from '@angular/core'
 import { Router } from '@angular/router';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -28,16 +27,20 @@ export class UtilitiesService extends GlobalService {
   private utilitiesStore: {
     isInMaintenance: boolean
   } = { isInMaintenance: false };
+  /**
+   * Target environment class for visual check: dev or prod
+   */
+  public environmentClass: string;
 
   constructor(
-    private http: HttpClient,
     private router: Router,
     private clipboard: Clipboard,
     private notificationService: NotificationService,
     protected errorHandlingService: ErrorHandlingService,
-    @Inject(WINDOW) private window: Window
+    @Inject(WINDOW) private window: Window & { __env: any }
   ) {
     super(errorHandlingService);
+    this.environmentClass = window.__env.environmentClass;
   }
 
   /**

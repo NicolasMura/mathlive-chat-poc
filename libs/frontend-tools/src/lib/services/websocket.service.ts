@@ -105,8 +105,6 @@ export class WebSocketService extends GlobalService implements OnDestroy {
    */
   public connect(username: string): void {
     this.stopRetry = false;
-    console.log(this.socket$);
-    console.log(this.socket$?.closed);
     if (!this.socket$ || this.socket$.closed) {
       console.log('Create new WebSocket');
       this.socket$ = this.getNewWebSocket(username);

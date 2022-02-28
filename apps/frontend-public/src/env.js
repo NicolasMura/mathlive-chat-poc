@@ -14,6 +14,7 @@
   // Environment variables
   window.__env.production = false;
   window.__env.hmr = true;
+  window.__env.environmentClass = 'local';
   window.__env.wsEndpoint = ws + '://' + backendHostname;
   window.__env.backendApi = {};
   window.__env.backendApi.baseUrl        = protocol + '://' + backendHostname + apiPath;
