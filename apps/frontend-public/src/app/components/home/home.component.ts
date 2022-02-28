@@ -11,31 +11,41 @@ import * as moment from 'moment';
 @Component({
   selector: 'mlchat-poc-message',
   template: `
-    <div [ngClass]="{ 'align-right': message.sender === user.username }">
-    <img [src]="'https://avatars.dicebear.com/api/avataaars/' + message.sender + '.svg'"
+    <div class="message" [ngClass]="{ 'align-right': message.sender === user.username }">
+      <img [src]="'https://avatars.dicebear.com/api/avataaars/' + message.sender + '.svg'"
          alt="{{ message.sender + ' avatar' }}"
          title="{{ message.sender + ' avatar' }}">
       <div *ngIf="!message.isMathliveContent">
-        {{ message.sender }} : {{ message.content }}
+        {{ message.content }}
       </div>
-      <div #mathfield class="scrollable"
+      <div #mathfield class="scrollable" style="display: flex;"
+           [style.justify-content]="message.sender === user.username ? 'end' : 'start'"
            [style.visibility]="message.isMathliveContent ? 'visible' : 'hidden'"
            [style.height]="message.isMathliveContent ? 'auto' : '0px'">
       </div>
     </div>
   `,
   styles: [`
-    h1 {
-      font-weight: normal;
+    .message {
+      &.align-right {
+        text-align: right;
+      }
+      img {
+        max-width: 50px;
+      }
+      .scrollable {
+        pointer-events: none; /* to allow page scrolling on mobile device */
+      }
     }
-    .align-right {
-      text-align: right;
-    }
-    img {
-      max-width: 50px;
-    }
-    .scrollable {
-      pointer-events: none; /* to allow page scrolling on mobile device */
+    ::ng-deep {
+      .message {
+        math-field {
+          font-size: inherit;
+          padding: inherit;
+          border: none;
+          box-shadow: none;
+        }
+      }
     }
   `]
 })
@@ -130,7 +140,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   /**
    * Actions bar element height
    */
-  actionsBarHeight = 80;
+  actionsBarHeight = 64;
   /**
    * Virtual keyboard element height
    */
@@ -158,7 +168,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   /**
    * Reference to messages container for scrolling convenience
    */
-  @ViewChild('messagesContainer', { static: true }) messagesContainer!: ElementRef;
+  @ViewChild('messagesContainer') messagesContainer!: ElementRef;
   /**
    * @TODO see if useful or not
    * Reference to messages
@@ -203,6 +213,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       if (reconnect) {
         this.webSocketService.getAllMessagesFromServer().subscribe((messages: Message[]) => {
           // automatic scroll to bottom to show last messages
+          // @TODO marche pas
           console.log('GOOOO');
           setTimeout(() => {
             this.scrollToBottom();
@@ -234,6 +245,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     this.mfe.addEventListener('input', (event: Event) => {
       // adjust actions bar height
+      console.log(this.mfe.clientHeight + 20);
       setTimeout(() => {
         this.actionsBarHeight = this.mfe.clientHeight + 20; // 20px padding
       }, 200);
@@ -311,7 +323,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
       setTimeout(() => {
         // reinitialize actions bar height
-        this.actionsBarHeight = 80;
+        this.actionsBarHeight = 64;
 
         this.input.nativeElement.focus();
       }, 200); // needed to get actions bar height update + focus on input
@@ -357,22 +369,26 @@ export class HomeComponent implements OnInit, AfterViewInit {
    * Scroll to the end of messages list
    */
   scrollToBottom = () => {
-    try {
+    if (this.messagesContainer) {
       this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight + 50;  // 20px padding
-    } catch (err) {
-      console.log(err);
     }
+    // try {
+    //   this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight + 50;  // 20px padding
+    // } catch (err) {
+    //   console.log(err);
+    // }
   }
 
   /**
    * Scan for CTRL + Enter event for quick login access
    * @TODO semble entrer en conflit avec les shortcuts du virtual keyboard apple / android
+   * @TODO à désactiver sur Firefox (effet de bord: activation du mode math...)
    */
   @HostListener('window:keydown', ['$event'])
   onKeyPress($event: KeyboardEvent): void {
-    // if (($event.ctrlKey || $event.metaKey) && $event.code === 'Enter') {
-    //   // this.input.nativeElement.focus();
-    //   this.sendMessage();
-    // }
+    if (($event.ctrlKey || $event.metaKey) && $event.code === 'Enter') {
+      // this.input.nativeElement.focus();
+      this.sendMessage();
+    }
   }
 }

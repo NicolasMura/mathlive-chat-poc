@@ -7,7 +7,7 @@
     </div>
   </div>
 
-  <mat-sidenav-container [ngStyle]="{'background-color': (currentUser$ | async) ? 'white' : ''}">
+  <mat-sidenav-container>
     <mat-sidenav #sidenav mode="over" position="end"
                  [fixedInViewport]="true">
       <mat-nav-list *ngIf="currentUser$ | async">

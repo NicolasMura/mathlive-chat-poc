@@ -1,3 +1,5 @@
+$toolbarHeight: 64px;
+
 .app-root {
   display: flex;
   flex-direction: column;
@@ -18,7 +20,7 @@
 
       .mat-toolbar {
         position: fixed;
-        height: 64px;
+        height: $toolbarHeight;
         /* Make sure the toolbar will stay on top of the content as it scrolls past. */
         z-index: 2000000000;
         background-color: #e91e63;
@@ -34,8 +36,8 @@
         height: 100%;
 
         &.isLogged {
-          height: calc(100% - 64px); // 64px = mat-toolbar height
-          margin-top: 64px;
+          height: calc(100vh - #{$toolbarHeight}); // 64px = mat-toolbar height
+          margin-top: $toolbarHeight;
         }
       }
     }

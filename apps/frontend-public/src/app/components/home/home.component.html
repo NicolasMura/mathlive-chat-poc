@@ -4,12 +4,10 @@
   </mat-error>
 
   <div class="messages" #messagesContainer>
-    <div *ngIf="sortMessagesByUnixDate(webSocketService.getAllMessages()).reverse().length > 0">
-      <mlchat-poc-message #messages *ngFor="let message of sortMessagesByUnixDate(webSocketService.getAllMessages()).reverse(); let i = index;"
-                          [message]="message"
-                          [user]="userService.getCurrentUser()" [i]="i">
-      </mlchat-poc-message>
-    </div>
+    <mlchat-poc-message #messages *ngFor="let message of sortMessagesByUnixDate(webSocketService.getAllMessages()).reverse(); let i = index;"
+                        [message]="message"
+                        [user]="userService.getCurrentUser()" [i]="i">
+    </mlchat-poc-message>
 
     <!-- Debug form START -->
     <!-- <pre style="font-size:15px">{{ messageForm.getRawValue() | json }}</pre> -->
@@ -28,14 +26,14 @@
        [style.bottom.px]="virtualKeyboardHeight">
     <form [formGroup]="messageForm" noValidate (keydown.enter)="$event.preventDefault()">
 
-      <button mat-fab [color]="modeMathlive ? 'warn': 'accent'" aria-label="display mathfield"
+      <button mat-mini-fab [color]="modeMathlive ? 'warn': 'accent'" aria-label="display mathfield"
               (click)="toggleMathFieldMode()"
-              [matTooltip]="modeMathlive ? 'Afficher le mode normal' : 'Afficher le mode Math'">
+              [matTooltip]="modeMathlive ? 'Afficher le mode normal' : 'Afficher le mode Mathématiques'">
         <!-- <mat-icon>functions</mat-icon> -->
         <mat-icon>calculate</mat-icon>
       </button>
 
-      <!-- <button mat-fab [color]="isVirtualKeyboardDisplayed ? 'primary': ''" aria-label="display mathfield"
+      <!-- <button mat-mini-fab [color]="isVirtualKeyboardDisplayed ? 'primary': ''" aria-label="display mathfield"
               *ngIf="modeMathlive"
               (click)="toggleMathFieldVirtualKeyboard();">
         <mat-icon>keyboard</mat-icon>
@@ -56,13 +54,12 @@
         <!-- <mat-hint *ngIf="!messageForm?.get('message')?.value">Veuillez saisir votre {{ modeMathlive ? 'formule' : 'message' }}</mat-hint> -->
       </mat-form-field>
 
-      <button mat-fab color="accent" aria-label="send message"
+      <button mat-mini-fab color="warn" aria-label="send message"
               (click)="sendMessage()"
               [disabled]="!messageForm.valid || webSocketService.lostConnection"
               matTooltip="Envoyer votre message"
               class="submit"
-              data-cy="send-message-btn"
-              style="background-color: inherit;">
+              data-cy="send-message-btn">
         <mat-icon>send</mat-icon>
       </button>
 
