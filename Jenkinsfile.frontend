@@ -18,7 +18,7 @@ pipeline {
                 step([$class: 'WsCleanup'])
                 checkout([
                     $class: 'GitSCM',
-                    branches: [[name: 'master']],
+                    branches: [[name: 'main']],
                     doGenerateSubmoduleConfigurations: false,
                     extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'mlchat-poc']],
                     extensions: [],
