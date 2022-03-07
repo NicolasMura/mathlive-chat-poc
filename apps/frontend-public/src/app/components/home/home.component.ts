@@ -245,7 +245,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     this.mfe.addEventListener('input', (event: Event) => {
       // adjust actions bar height
-      console.log(this.mfe.clientHeight + 20);
       setTimeout(() => {
         this.actionsBarHeight = this.mfe.clientHeight + 20; // 20px padding
       }, 200);
