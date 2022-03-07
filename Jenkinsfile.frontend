@@ -31,7 +31,7 @@ pipeline {
             agent {
                 docker {
                     // image 'cypress/included:7.3.0' // n'a pas l'air de fonctionner...
-                    image 'cypress/base:12.19.0'
+                    image 'cypress/base:16.13.0'
                     // Run the container on the node specified at the top-level of the Pipeline, in the same workspace, rather than on a new node entirely:
                     reuseNode true
                 }
