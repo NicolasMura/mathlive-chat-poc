@@ -11,8 +11,20 @@ pipeline {
         DOCKER_IMAGE_LATEST = ''
     }
 
+    parameters {
+        booleanParam(
+            name: 'DEPLOY_TO_DEV',
+            defaultValue: true
+        )
+        booleanParam(
+            name: 'RELEASE',
+            defaultValue: false
+        )
+    }
+
     stages {
         stage('SCM Checkout') {
+            // when { expression { !params.RELEASE } }
             agent any
             steps {
                 step([$class: 'WsCleanup'])
@@ -27,6 +39,7 @@ pipeline {
                 ])
             }
         }
+
         stage('Build & Test') {
             agent {
                 docker {
@@ -49,6 +62,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Build & Push Docker image') {
             agent any
             steps {
@@ -77,12 +91,32 @@ pipeline {
                 }
             }
         }
+
         stage('Clean') {
             agent any
             steps {
                 sh "docker image ls"
                 sh "docker rmi $DOCKER_IMAGE_NAME:$BUILD_NUMBER $DOCKER_IMAGE_NAME:latest"
                 sh "docker image ls"
+            }
+        }
+
+        stage('Upgrade DEV through SSH') {
+            when { expression { !params.RELEASE && params.DEPLOY_TO_DEV } }
+            agent any
+            steps {
+                withCredentials([sshUserPrivateKey(
+                    credentialsId: 'ovh_vps_id_rsa_jenkins_docker',
+                    keyFileVariable: 'KEY'
+                )]) {
+                    // sh "ssh -i ${KEY} -o StrictHostKeyChecking=no nmura@mathlive-chat-poc.nicolasmura.com -C 'cd projects && ls -la'"
+                    sh'''
+                        ssh -i ${KEY} -o StrictHostKeyChecking=no nmura@mathlive-chat-poc.nicolasmura.com <<DATA
+                        cd projects/mathlive-chat-poc/prod
+                        ls -la .docker
+                        ./.docker/upgrade.sh
+                    '''
+                }
             }
         }
     }
