@@ -73,8 +73,8 @@ pipeline {
                     docker --version
                 '''
                 withCredentials([
-                    file(credentialsId: 'mathlive-chat-poc.nicolasmura.com_privkey.pem', variable: 'privkey'),
-                    file(credentialsId: 'mathlive-chat-poc.nicolasmura.com_fullchain.pem', variable: 'fullchain')
+                    file(credentialsId: 'dev.mathlive-chat-poc.nicolasmura.com_privkey.pem', variable: 'privkey'),
+                    file(credentialsId: 'dev.mathlive-chat-poc.nicolasmura.com_fullchain.pem', variable: 'fullchain')
                 ]) {
                     writeFile file: 'ssl/privkey.pem', text: readFile(privkey)
                     writeFile file: 'ssl/fullchain.pem', text: readFile(fullchain)
@@ -101,7 +101,7 @@ pipeline {
             }
         }
 
-        stage('Upgrade DEV through SSH') {
+        stage('Update DEV through SSH') {
             when { expression { !params.RELEASE && params.DEPLOY_TO_DEV } }
             agent any
             steps {
@@ -112,7 +112,7 @@ pipeline {
                     // sh "ssh -i ${KEY} -o StrictHostKeyChecking=no nmura@mathlive-chat-poc.nicolasmura.com -C 'cd projects && ls -la'"
                     sh'''
                         ssh -i ${KEY} -o StrictHostKeyChecking=no nmura@mathlive-chat-poc.nicolasmura.com <<DATA
-                        cd projects/mathlive-chat-poc/prod
+                        cd projects/mathlive-chat-poc/dev
                         ls -la .docker
                         ./.docker/upgrade.sh
                     '''
