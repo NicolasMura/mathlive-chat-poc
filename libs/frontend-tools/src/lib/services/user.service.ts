@@ -95,7 +95,9 @@ export class UserService extends GlobalService {
         )),
         tap((user: User) => this.startSession(user)),
         catchError(error => {
-          // this.cancelSession();
+          if (error.error?.statusCode === 409) {
+            this.cancelSession();
+          }
           return this.handleError(error);
         })
       );
