@@ -107,7 +107,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
    * Setter for input (autofocus - desktop mode)
    */
   @ViewChild('input') set _input(input: ElementRef) {
-    if (input && !this.input) {
+    if (input && !this.input && !this.utilitiesService.isTouchDevice()) {
       setTimeout(() => {
         this.input = input;
         input.nativeElement.focus();
@@ -324,7 +324,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
         // reinitialize actions bar height
         this.actionsBarHeight = 64;
 
-        this.input.nativeElement.focus();
+        if (!this.utilitiesService.isTouchDevice()) {
+          this.input.nativeElement.focus();
+        }
       }, 200); // needed to get actions bar height update + focus on input
 
       const virtualKeyboardElement = this.el.nativeElement.querySelector('.mathfield-wrapper math-field');
@@ -355,7 +357,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.messageForm.reset();
       this.standardInput = '';
       this.mfe.value = '';
-      this.input.nativeElement.focus();
+      if (!this.utilitiesService.isTouchDevice()) {
+        this.input.nativeElement.focus();
+      }
 
       // automatic scroll to bottom to show last messages
       setTimeout(() => {
@@ -387,7 +391,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   onKeyPress($event: KeyboardEvent): void {
     if (($event.ctrlKey || $event.metaKey) && $event.code === 'Enter') {
       // this.input.nativeElement.focus();
-      this.sendMessage();
+      // this.sendMessage();
     }
   }
 }

@@ -73,6 +73,15 @@ export class UtilitiesService extends GlobalService {
     return window.matchMedia('(display-mode: standalone)').matches;
   }
 
+  /**
+   * Detects if browser has "touch capabilities"
+   * See https://stackoverflow.com/questions/4817029/whats-the-best-way-to-detect-a-touch-screen-device-using-javascript
+   */
+  isTouchDevice() {
+    return (('ontouchstart' in window) ||
+      (navigator.maxTouchPoints > 0));
+  }
+
   getHostname(): string {
     return this.window.location.hostname;
   }

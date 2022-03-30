@@ -48,7 +48,8 @@
 
       <mat-form-field #userInputFormfield appearance="fill"
                       [style.visibility]="modeMathlive ? 'hidden' : 'visible'">
-        <mat-label for="message">Votre message ({{ utilitiesService.isMacOS ? 'CMD + ENTER' : 'CTRL + ENTER' }} pour envoyer)</mat-label>
+        <mat-label for="message">Votre message</mat-label>
+        <!-- <mat-label for="message">Votre message ({{ utilitiesService.isMacOS ? 'CMD + ENTER' : 'CTRL + ENTER' }} pour envoyer)</mat-label> -->
         <input matInput type="text" formControlName="message" #input />
         <!-- hint ci-dessous à éventuellement afficher sur du desktop -->
         <!-- <mat-hint *ngIf="!messageForm?.get('message')?.value">Veuillez saisir votre {{ modeMathlive ? 'formule' : 'message' }}</mat-hint> -->
