@@ -191,6 +191,15 @@ This resulted in following output:
   nmura@Nico-MBA-WiFi $
 ```
 
+Then, after Angular app development, you can start the React equivalent app development with:
+
+```bash
+  yarn add -D @nrwl/react
+  nx g @nrwl/react:app frontend-public-react
+```
+
+Note: to make auto-import from the generic `models` library available to frontend-public-react in VS Code, you will have to install [Nx Console Plugin](https://marketplace.visualstudio.com/items?itemName=nrwl.angular-console).
+
 Visit the [Nx Angular Documentation](https://nx.dev/angular) to learn more.
 
 [10-minute video showing all Nx features](https://nx.dev/angular/getting-started/what-is-nx)

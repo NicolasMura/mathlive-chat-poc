@@ -36,7 +36,7 @@ export class UtilitiesService extends GlobalService {
     private router: Router,
     private clipboard: Clipboard,
     private notificationService: NotificationService,
-    protected errorHandlingService: ErrorHandlingService,
+    protected override errorHandlingService: ErrorHandlingService,
     @Inject(WINDOW) private window: Window & { __env: any }
   ) {
     super(errorHandlingService);

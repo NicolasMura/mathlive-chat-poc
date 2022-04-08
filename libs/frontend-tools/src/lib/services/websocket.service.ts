@@ -74,7 +74,7 @@ export class WebSocketService extends GlobalService implements OnDestroy {
 
   constructor(
     private http: HttpClient,
-    protected errorHandlingService: ErrorHandlingService
+    protected override errorHandlingService: ErrorHandlingService
   ) {
     super(errorHandlingService);
   }

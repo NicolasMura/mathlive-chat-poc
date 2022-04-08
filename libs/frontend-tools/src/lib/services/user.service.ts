@@ -54,7 +54,7 @@ export class UserService extends GlobalService {
     private localStorageService: LocalStorageService,
     private webSocketService: WebSocketService,
     protected notificationService: NotificationService,
-    protected errorHandlingService: ErrorHandlingService
+    protected override errorHandlingService: ErrorHandlingService
   ) {
     super(errorHandlingService);
   }
