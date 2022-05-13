@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 -->
 <!-- markdownlint-disable MD041 -->
 <p align="center">
-  <a href="https://@TODO.nicolasmura.com" target="_blank">
+  <a href="https://mathlive-chat-poc.nicolasmura.com" target="_blank">
     <img alt="Mathlive chat poc image" src="./apps/frontend-public/src/assets/images/mathlive.png" width="400" />
   </a>
 </p>
