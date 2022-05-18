@@ -43,14 +43,18 @@ pipeline {
         stage('Unit Tests') {
             agent {
                 docker {
-                    // image 'node:12.16.1-alpine'
+                    // image 'node:12.16.1-alpine' /// marche pô
                     image 'cypress/base:16.13.0'
                 }
             }
             steps {
                 sh '''#!/bin/bash
+                    whoami
+                    pwd
                     ls -la
                     node --version
+                    yarn --version
+                    yarn
                     npx nx test frontend-public
                 '''
             }
