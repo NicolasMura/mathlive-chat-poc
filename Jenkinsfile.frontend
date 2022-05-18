@@ -52,8 +52,6 @@ pipeline {
                     pwd
                     ls -la
                     node --version
-                    yarn --version
-                    yarn && BUILD_ID=${BUILD_ID} yarn generate-build-infos
                     npx nx test frontend-public
                 '''
             }
