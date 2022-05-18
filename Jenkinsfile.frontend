@@ -48,8 +48,6 @@ pipeline {
             }
             steps {
                 sh '''#!/bin/bash
-                    whoami
-                    pwd
                     ls -la
                     node --version
                     npx nx test frontend-public
