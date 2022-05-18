@@ -76,9 +76,8 @@ pipeline {
                     ls -la
                     node --version
                     yarn --version
-                    # yarn && BUILD_ID=${BUILD_ID} yarn generate-build-infos
+                    BUILD_ID=${BUILD_ID} yarn generate-build-infos
                     npx nx e2e frontend-public-e2e --headless
-                    npx nx build frontend-public --prod
                 '''
             }
         }
@@ -91,6 +90,7 @@ pipeline {
         //             pwd
         //             ls -la
         //             docker --version
+        //             npx nx build frontend-public --prod
         //         '''
         //         withCredentials([
         //             file(credentialsId: 'dev.mathlive-chat-poc.nicolasmura.com_privkey.pem', variable: 'privkey'),
