@@ -43,7 +43,8 @@ pipeline {
         stage('Unit Tests') {
             agent {
                 docker {
-                    image 'node:12.16.1-alpine'
+                    // image 'node:12.16.1-alpine'
+                    image 'cypress/base:16.13.0'
                 }
             }
             steps {
