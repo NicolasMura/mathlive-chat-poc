@@ -1,15 +1,32 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MatIconModule } from '@angular/material/icon';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from '@mlchat-poc/vendors';
+import { of } from 'rxjs';
+import { UserService, UtilitiesService } from '@mlchat-poc/frontend-tools';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
+  const userServiceMock = {
+    checkForExistingUsername: jest.fn(),
+    logout: jest.fn(),
+    currentUser$: '???',
+  };
+  const utilitiesServiceMock = {
+    isAppInMaintenanceMode: jest.fn().mockReturnValue(of(false))
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [AppComponent],
       imports: [
         RouterTestingModule,
-        MatIconModule
+        BrowserAnimationsModule,
+        MaterialModule
+      ],
+      providers: [
+        { provide: UserService, useValue: userServiceMock },
+        { provide: UtilitiesService, useValue: utilitiesServiceMock },
       ]
     }).compileComponents();
   });

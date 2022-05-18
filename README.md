@@ -28,7 +28,7 @@ Fullstack monorepo for a simple chat with visual math equations feature powered 
 
 To contribute to this project and run it locally, you will need:
 
-- [Node JS >= v16.0 & NPM >= 8.1.0](https://nodejs.org/en)
+- [Node JS >= v16.14 & NPM >= 8.5](https://nodejs.org/en)
 - [Angular 12.x](https://angular.io)
 - [Typescript >= 4.3.5](https://www.typescriptlang.org)
 - [Docker >= 20.10.11](https://www.docker.com)
@@ -136,7 +136,23 @@ Don't forget also to give correct ownership to Apache log folder:
 
 # Unit tests with Jest
 
-@TODO
+To run all unit tests with Jest, run:
+
+```bash
+  yarn test
+```
+
+To run unit tests just for `frontend-public` Angular project, run:
+
+```bash
+  npx nx test frontend-public
+```
+
+To run a specific test file, let's say `apps/frontend-public/src/app/app.component.spec.ts`, run:
+
+```bash
+  npx nx test frontend-public --test-file apps/frontend-public/src/app/app.component.spec.ts
+```
 
 See also https://github.com/molily/angular-form-testing
 
@@ -156,7 +172,7 @@ See also https://github.com/molily/angular-form-testing
 This project was generated using [Nx](https://nx.dev) and below command:
 
 ```bash
-  npx create-nx-workspace --preset=angular
+  npx create-nx-workspace@"<13.0.0" --preset=angular --package-manager=yarn
 ```
 
 This resulted in following output:

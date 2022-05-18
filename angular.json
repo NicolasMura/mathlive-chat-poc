@@ -172,8 +172,8 @@
           "builder": "@nrwl/cypress:cypress",
           "options": {
             "cypressConfig": "apps/frontend-public-e2e/cypress.json",
-            "tsConfig": "apps/frontend-public-e2e/tsconfig.e2e.json",
-            "devServerTarget": "frontend-public:serve:development"
+            "devServerTarget": "frontend-public:serve:development",
+            "tsConfig": "apps/frontend-public-e2e/tsconfig.e2e.json"
           },
           "configurations": {
             "production": {

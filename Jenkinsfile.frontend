@@ -40,11 +40,10 @@ pipeline {
             }
         }
 
-        stage('Build & Test') {
+        stage('Unit Tests') {
             agent {
                 docker {
-                    // image 'cypress/included:7.3.0' // n'a pas l'air de fonctionner...
-                    image 'cypress/base:16.13.0'
+                    image 'node:18-alpine3.14'
                     // Run the container on the node specified at the top-level of the Pipeline, in the same workspace, rather than on a new node entirely:
                     reuseNode true
                 }
@@ -57,67 +56,89 @@ pipeline {
                     node --version
                     yarn --version
                     yarn && BUILD_ID=${BUILD_ID} yarn generate-build-infos
-                    npx nx e2e frontend-public-e2e --headless
-                    npx nx build frontend-public --prod
+                    npx nx test frontend-public
                 '''
             }
         }
 
-        stage('Build & Push Docker image') {
-            agent any
-            steps {
-                sh '''#!/bin/bash
-                    whoami
-                    pwd
-                    ls -la
-                    docker --version
-                '''
-                withCredentials([
-                    file(credentialsId: 'dev.mathlive-chat-poc.nicolasmura.com_privkey.pem', variable: 'privkey'),
-                    file(credentialsId: 'dev.mathlive-chat-poc.nicolasmura.com_fullchain.pem', variable: 'fullchain')
-                ]) {
-                    writeFile file: 'ssl/privkey.pem', text: readFile(privkey)
-                    writeFile file: 'ssl/fullchain.pem', text: readFile(fullchain)
-                }
-                script {
-                    DOCKER_IMAGE = docker.build("$DOCKER_IMAGE_NAME:$BUILD_NUMBER", "-f .docker/Dockerfile.frontend-public .")
-                    DOCKER_IMAGE_LATEST = docker.build("$DOCKER_IMAGE_NAME", "-f .docker/Dockerfile.frontend-public .")
-                    // Assume the Docker Hub registry by passing an empty string as the first parameter
-                    // @TODO: sécuriser le login (cf. job logs : warning WARNING! Using --password via the CLI is insecure. Use --password-stdin.)
-                    docker.withRegistry('' , 'dockerhub') {
-                        DOCKER_IMAGE.push()
-                        DOCKER_IMAGE_LATEST.push()
-                    }
-                }
-            }
-        }
+        // stage('E2E Tests & Build') {
+        //     agent {
+        //         docker {
+        //             // image 'cypress/included:7.3.0' // n'a pas l'air de fonctionner...
+        //             image 'cypress/base:16.13.0'
+        //             // Run the container on the node specified at the top-level of the Pipeline, in the same workspace, rather than on a new node entirely:
+        //             reuseNode true
+        //         }
+        //     }
+        //     steps {
+        //         sh '''#!/bin/bash
+        //             whoami
+        //             pwd
+        //             ls -la
+        //             node --version
+        //             yarn --version
+        //             # yarn && BUILD_ID=${BUILD_ID} yarn generate-build-infos
+        //             npx nx e2e frontend-public-e2e --headless
+        //             npx nx build frontend-public --prod
+        //         '''
+        //     }
+        // }
 
-        stage('Clean') {
-            agent any
-            steps {
-                sh "docker image ls"
-                sh "docker rmi $DOCKER_IMAGE_NAME:$BUILD_NUMBER $DOCKER_IMAGE_NAME:latest"
-                sh "docker image ls"
-            }
-        }
+        // stage('Build & Push Docker image') {
+        //     agent any
+        //     steps {
+        //         sh '''#!/bin/bash
+        //             whoami
+        //             pwd
+        //             ls -la
+        //             docker --version
+        //         '''
+        //         withCredentials([
+        //             file(credentialsId: 'dev.mathlive-chat-poc.nicolasmura.com_privkey.pem', variable: 'privkey'),
+        //             file(credentialsId: 'dev.mathlive-chat-poc.nicolasmura.com_fullchain.pem', variable: 'fullchain')
+        //         ]) {
+        //             writeFile file: 'ssl/privkey.pem', text: readFile(privkey)
+        //             writeFile file: 'ssl/fullchain.pem', text: readFile(fullchain)
+        //         }
+        //         script {
+        //             DOCKER_IMAGE = docker.build("$DOCKER_IMAGE_NAME:$BUILD_NUMBER", "-f .docker/Dockerfile.frontend-public .")
+        //             DOCKER_IMAGE_LATEST = docker.build("$DOCKER_IMAGE_NAME", "-f .docker/Dockerfile.frontend-public .")
+        //             // Assume the Docker Hub registry by passing an empty string as the first parameter
+        //             // @TODO: sécuriser le login (cf. job logs : warning WARNING! Using --password via the CLI is insecure. Use --password-stdin.)
+        //             docker.withRegistry('' , 'dockerhub') {
+        //                 DOCKER_IMAGE.push()
+        //                 DOCKER_IMAGE_LATEST.push()
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Update DEV through SSH') {
-            when { expression { !params.RELEASE && params.DEPLOY_TO_DEV } }
-            agent any
-            steps {
-                withCredentials([sshUserPrivateKey(
-                    credentialsId: 'ovh_vps_id_rsa_jenkins_docker',
-                    keyFileVariable: 'KEY'
-                )]) {
-                    // sh "ssh -i ${KEY} -o StrictHostKeyChecking=no nmura@mathlive-chat-poc.nicolasmura.com -C 'cd projects && ls -la'"
-                    sh'''
-                        ssh -i ${KEY} -o StrictHostKeyChecking=no nmura@mathlive-chat-poc.nicolasmura.com <<DATA
-                        cd projects/mathlive-chat-poc/dev
-                        ls -la .docker
-                        ./.docker/upgrade.sh
-                    '''
-                }
-            }
-        }
+        // stage('Clean') {
+        //     agent any
+        //     steps {
+        //         sh "docker image ls"
+        //         sh "docker rmi $DOCKER_IMAGE_NAME:$BUILD_NUMBER $DOCKER_IMAGE_NAME:latest"
+        //         sh "docker image ls"
+        //     }
+        // }
+
+        // stage('Update DEV through SSH') {
+        //     when { expression { !params.RELEASE && params.DEPLOY_TO_DEV } }
+        //     agent any
+        //     steps {
+        //         withCredentials([sshUserPrivateKey(
+        //             credentialsId: 'ovh_vps_id_rsa_jenkins_docker',
+        //             keyFileVariable: 'KEY'
+        //         )]) {
+        //             // sh "ssh -i ${KEY} -o StrictHostKeyChecking=no nmura@mathlive-chat-poc.nicolasmura.com -C 'cd projects && ls -la'"
+        //             sh'''
+        //                 ssh -i ${KEY} -o StrictHostKeyChecking=no nmura@mathlive-chat-poc.nicolasmura.com <<DATA
+        //                 cd projects/mathlive-chat-poc/dev
+        //                 ls -la .docker
+        //                 ./.docker/upgrade.sh
+        //             '''
+        //         }
+        //     }
+        // }
     }
 }
