@@ -61,10 +61,12 @@ If needed, adjust environment variables in `apps/frontend-public/src/env.js`
 Then, start frontend and backend apps:
 
 ```bash
-  nx serve frontend-public backend-api
+  yarn start:frontend-public
+  yarn start:frontend-public-react
+  yarn start:backend-api
 ```
 
-Visit `http://localhost:4200` to see the result.
+Visit `http://localhost:4200` & `http://localhost:4201` to see the result.
 
 # Dockerization
 
@@ -158,7 +160,25 @@ See also https://github.com/molily/angular-form-testing
 
 # End-to-end (e2e) tests with Cypress
 
-@TODO
+To launch E2E tests, you will need Cypress to be installed on your machine, and stop your local server [http://localhost:4200](http://localhost:4200) before launching tests.
+
+To launch E2E tests with Cypress, run:
+
+```bash
+  npx nx e2e frontend-public-e2e --headless
+```
+
+To see what is really happening, run instead:
+
+```bash
+  npx nx e2e frontend-public-e2e
+```
+
+To launch E2E tests in watch mode, run:
+
+```bash
+  npx nx e2e frontend-public-e2e --watch
+```
 
 # Interesting stuffs to do / Nice to have
 

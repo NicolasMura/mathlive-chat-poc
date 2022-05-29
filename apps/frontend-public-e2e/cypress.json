@@ -10,19 +10,20 @@
   "screenshotsFolder": "../../dist/cypress/apps/frontend-public-e2e/screenshots",
   "chromeWebSecurity": false,
   "env": {
-    "baseUrl": "http://localhost:4200",
+    "baseUrl": "http://localhost:4201",
     "protocol": "http",
     "hostname": "localhost",
-    "port": 4200,
+    "port": 4201,
     "backApi": {
-      "baseUrlCampaign": "http://localhost:3000/campaigns"
+      "baseUrl": "http://localhost:3334/api",
+      "baseUrlUser": "http://localhost:3334/api/users",
+      "baseUrlMessage": "http://localhost:3334/api/messages",
+      "baseUrlTodos": "http://localhost:3334/api/todos"
     },
     "routes": {
       "root": "",
-      "campaigns": {
-        "root": "campaigns",
-        "update": "update"
-      }
+      "login": "login",
+      "maintenance": "maintenance"
     }
   },
   "viewportWidth": 1920,

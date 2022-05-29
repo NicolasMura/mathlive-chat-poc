@@ -1,3 +1,4 @@
+import { CoreConstants } from '@mlchat-poc/frontend-tools';
 import { getAddTodoButton, getTodos } from "../support/app.po";
 
 describe('frontend-public', () => {
@@ -5,7 +6,7 @@ describe('frontend-public', () => {
 
   beforeEach(() => cy.visit(rootUrl));
 
-  it('Displays welcome message', () => {
+  xit('Displays welcome message', () => {
     // @TODO
   });
 

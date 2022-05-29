@@ -4,3 +4,5 @@ export * from './lib/models/user.model';
 export * from './lib/models/websocket-message.model';
 export * from './lib/models/todo.model';
 export * from './lib/mocks/user.mock';
+export * from './lib/mocks/websocket-message.mock';
+export * from './lib/mocks/todo.mock';

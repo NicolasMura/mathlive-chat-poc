@@ -8,6 +8,7 @@ export * from './lib/guards/user-logged.guard';
 export * from './lib/models/build-infos.model';
 export * from './lib/models/user.model';
 export * from './lib/models/websocket-message.model';
+export * from './lib/models/todo.model';
 export * from './lib/services/error-handling.service';
 export * from './lib/services/global-service.service';
 export * from './lib/services/notification.service';

@@ -1,6 +1,4 @@
-export interface Todo {
-  title: string;
-}
+import { Todo } from '@mlchat-poc/models';
 
 export class TodoModel implements Todo {
   title: string;
